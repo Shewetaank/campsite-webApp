@@ -1,0 +1,3 @@
+:host >>> .ui-table .ui-table-tbody > tr > td {
+    text-align: center !important;
+}

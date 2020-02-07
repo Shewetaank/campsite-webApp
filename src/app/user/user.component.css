@@ -1,0 +1,27 @@
+div {
+    font-family: Tahoma, Verdana, Segoe, sans-serif;
+    padding: 10px;
+}
+.container{
+    display:flex;
+    width: 90%;
+    padding-top: 80px;
+}
+.flex-item{
+    flex-grow: 1;
+}
+
+.center {
+    margin: auto;
+    width: 50%;
+    border: 3px solid white;
+    background: white;
+    padding: 10px;
+  }
+  .input-text {
+    height: 30px !important;
+}
+.span-class {
+    width: 140px !important;
+    margin-left: 0px !important;
+}

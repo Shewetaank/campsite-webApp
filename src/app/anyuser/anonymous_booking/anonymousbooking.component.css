@@ -1,0 +1,11 @@
+.input-text {
+    height: 30px !important;
+}
+.span-class {
+    width: 180px !important;
+    margin-left: 0px !important;
+}
+
+:host >>> .ui-table .ui-table-tbody > tr > td {
+    text-align: center !important;
+}

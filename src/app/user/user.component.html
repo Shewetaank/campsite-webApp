@@ -1,0 +1,45 @@
+<div class="container">
+    <div class="center">
+        <form [formGroup]="form" (ngSubmit)="registerUser()">
+            <table>
+                <tr>
+                    <td><span class="span-class">First Name:</span>
+                        <input type="text" class="input-text" formControlName="firstName"></td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="span-class">Last Name:</span>
+                        <input type="text" class="input-text" formControlName="lastName">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="span-class">Email:</span>
+                        <input type="text" class="input-text" formControlName="email">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="span-class">Password:</span>
+                        <input type="password" class="input-text" formControlName="password">
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="span-class">Confirm Password:</span>
+                        <input type="password" class="input-text" formControlName="password">
+                    </td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <td>
+                        <span class="span-class"></span>
+                        <button type="submit" [disabled]="!form.valid" class="btn btn-success"> Submit </button>
+                    </td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>

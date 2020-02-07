@@ -1,0 +1,19 @@
+:host >>> .ui-state-disabled {
+    background: red !important;
+    opacity: 0.75 !important;
+}
+
+:host >>> .ui-datepicker table td > span {
+    color: black !important;
+}
+
+:host >>> .ui-datepicker table td > a.ui-state-active, body .ui-datepicker table td > span.ui-state-active {
+    background-color: green !important;
+}
+.input-text {
+    height: 30px !important;
+}
+.span-class {
+    width: 90px !important;
+    margin-left: 0px !important;
+}

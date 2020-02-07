@@ -1,0 +1,32 @@
+<p-messages [value]="_msgs"></p-messages>
+<table>
+    <tr>
+        <td><span class="span-class">First Name:</span><input class="input-text" type="text"
+                [(ngModel)]="editForm.firstName"></td>
+    </tr>
+    <tr>
+        <td><span class="span-class">Last Name:</span><input class="input-text" type="text"
+                [(ngModel)]="editForm.lastName"></td>
+    </tr>
+    <tr>
+        <td><span class="span-class">Email:</span><input class="input-text" type="text" [(ngModel)]="editForm.email">
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <p-calendar [(ngModel)]="dates" inline="true" [minDate]="minDate" [maxDate]="maxDate"
+                [style]="{'width':'30%'}" selectionMode="range" [(disabledDates)]="invalidDates" [readonlyInput]="true">
+            </p-calendar>
+        </td>
+    </tr>
+    <tr>
+        <td>&nbsp;</td>
+    </tr>
+    <tr>
+        <td>
+            <button type="submit" (click)="cancel()" class="btn btn-info"> Cancel </button>
+            &nbsp;&nbsp;
+            <button type="submit" (click)="registerCampsite()" class="btn btn-success"> Submit </button>
+        </td>
+    </tr>
+</table>
