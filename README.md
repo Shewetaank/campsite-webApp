@@ -6,7 +6,7 @@ The angular app is uses the campsite_webAPI backend to send the info to the serv
 Few things about the App- 
 1. The angular app has two main pages the home page (http://localhost:4200) which is the landing page to the web app. It contains a web form to create new registration and a spearate component to check for the existing bookings. (Please keep the booking number handy while testing) which allows the user to update and delete an existing booking.
 
-![alt test](screenshots/WebAppHomePage)
+![alt test](screenshots/WebAppHomePage.png)
 
 2. The second page on the angular app is for the logged in users. You can try that out by registering to the app and following instructions after clicking the Login/Singup link on the main landing page.
 3. While making a new booking you have to proivde all the details, firstName, lastName, Email & dates to compelete the booking. In case of any missing info error will be given to the user.
