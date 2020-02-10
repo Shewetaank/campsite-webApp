@@ -39,9 +39,9 @@ export class CampsiteService {
         ).toPromise();
     }
 
-    async deleteBooking(value: string) {
-        this.http.delete(
-            this.baseUrl + '/campsiteRegistration/' + value,
+    async deleteBooking(bookingNumber: string) {
+        return this.http.delete(
+            this.baseUrl + '/campsiteRegistration/' + bookingNumber,
             new RequestOptions({ headers: await this.getHeader() })
         ).toPromise();
     }

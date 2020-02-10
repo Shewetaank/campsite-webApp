@@ -17,7 +17,7 @@ import { UserService } from '../service/user/user.service';
 })
 export class CampsiteComponent implements OnInit {
 
-    invalidDates: Array<Date>;
+    public invalidDates: Array<Date>;
     dates: Array<Date>;
     subscription: Subscription;
     editForm: any = {
@@ -29,6 +29,7 @@ export class CampsiteComponent implements OnInit {
     _msgs: Message[] = [];
     minDate: Date;
     maxDate: Date;
+    bookingNumber = '';
 
     constructor(private campsiteService: CampsiteService,
         private editRegistrationService: EditRegistrationService,
@@ -48,7 +49,6 @@ export class CampsiteComponent implements OnInit {
         this.subscription = this.editRegistrationService.deleteBookingMessage.subscribe(
             async (message) => {
                 // have to put code here
-                console.log('updating the invalid dates');
                 await this.updateInvalidDates();
             }
         );
@@ -61,24 +61,37 @@ export class CampsiteComponent implements OnInit {
     }
 
     async registerCampsite() {
+        if(this.dates == undefined) {
+            this._msgs = [{ severity: 'error', detail: 'Please select your stay dates before making a reservation.'}];
+            return;
+        }
         var register = await this.userService.getRegisterCampsiteObject(this.editForm, this.dates);
+        if (this.bookingNumber.length != 0) {
+            register.bookingNumber = this.bookingNumber;
+        }
         var totalDates = this.datesService.getDatesInARangeOnUI(register.fromDate, register.toDate);
         if (this.datesService.inValidDateSelected(totalDates, this.invalidDates)) {
             this._msgs = [];
             this._msgs = [{ severity: 'warn', summary: 'Error', detail: 'You have selected a range with invalid dates.' }];
         } else {
             if (totalDates.length <= 3) {
+                console.log(register);
                 // add the dates to invalidDates
                 this.campsiteService.addRegistration(register).then(async res => {
                     if (res.status == 200) {
-                        var bookingNumber = res.json().bookingNumber;
+                        if (this.bookingNumber == res.json().bookingNumber) {
+                            this._msgs = [{ severity: 'success', summary: 'Confirmed', detail: 'Your booking has been updated. Booking Number- ' + this.bookingNumber }];
+                        } else {
+                            this._msgs = [{ severity: 'success', summary: 'Confirmed', detail: 'Your booking has been confirmed. Booking Number- ' + res.json().bookingNumber }];
+                        }
                         this.refreshBookings(res.json());
-                        this._msgs = [{ severity: 'success', summary: 'Confirmed', detail: 'Your booking has been confirmed. Booking Number- ' + bookingNumber }];
                         await this.updateInvalidDates();
                     } else {
                         // handle error
-
+                        this._msgs = [{ severity: 'error', summary: 'Error', detail: 'Error while making a booking, Please try again.' }];
                     }
+                }).catch(error => {
+                    this._msgs = [{ severity: 'error', summary: 'Error', detail: error.json().message }];
                 });
             } else {
                 this._msgs = [];
@@ -87,12 +100,12 @@ export class CampsiteComponent implements OnInit {
         }
     }
 
-    async updateInvalidDates() {
+    async  updateInvalidDates() {
         await this.campsiteService.getBookings().then(async res => {
             this.invalidDates = await this.datesService.setInvalidDates(res.json());
         })
     }
-    
+
     refreshBookings(value: any) {
         this.bookingUpdateService.setMessage(value);
     }
@@ -109,6 +122,7 @@ export class CampsiteComponent implements OnInit {
 
     async editRegistration(object: any) {
         const user = await this.campsiteService.getUserFromAuth();
+        this.bookingNumber = object.bookingNumber;
         await this.campsiteService.getUser(user.sub).then(res => {
             this.activeUser = res.json();
         });

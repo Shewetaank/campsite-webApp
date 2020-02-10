@@ -51,8 +51,8 @@ export class BookingsComponent implements OnInit {
             header: 'Please confirm',
             icon: 'pi pi-exclamation-triangle',
             accept: async () => {
-                this._msgs = [{ severity: 'success', summary: 'Confirmed', detail: 'Your reservation has been cancelled!' }];
                 this.deleteBooking(value);
+                await this.delay(1000);
                 this.refreshBookingsCalendar(value);
             },
             reject: () => {
@@ -61,12 +61,21 @@ export class BookingsComponent implements OnInit {
         });
     }
 
+    delay(ms: number) {
+        return new Promise(resolve => setTimeout(resolve, ms));
+    }
+
     async deleteBooking(value: any) {
         this.campsiteService.deleteBooking(value.bookingNumber)
-            .then(res => {
-                this.myBookings.forEach((item, index) => {
-                    if (item === value) this.myBookings.splice(index, 1);
-                });
+            .then(async res => {
+                if (res.json() == 1) {
+                    this.myBookings.forEach((item, index) => {
+                        if (item === value) this.myBookings.splice(index, 1);
+                    });
+                    this._msgs = [{ severity: 'success', summary: 'Confirmed', detail: 'Your reservation has been cancelled!' }];
+                } else {
+                    this._msgs = [{ severity: 'error', summary: 'Error', detail: 'An error occured while deleting your reservation.' }];
+                }
             });
     }
 
@@ -88,11 +97,14 @@ export class BookingsComponent implements OnInit {
             .then(res => {
                 this.campsiteService.getUserFromAuth().then(
                     u => {
-                        res.json().forEach((element: any) => {
-                            if (element.user.id == u.sub) {
-                                this.myBookings.push(element);
-                            }
-                        });
+                        this.campsiteService.getUser(u.sub).then(userValue => {
+                            console.log(userValue.json().profile.email);
+                            res.json().forEach((element: any) => {
+                                if (element.user.email == userValue.json().profile.email || element.user.id == u.sub) {
+                                    this.myBookings.push(element);
+                                }
+                            });
+                        })
                     });
             });
     }

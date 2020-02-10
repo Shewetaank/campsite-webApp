@@ -7,6 +7,7 @@ import { Message } from 'primeng/api';
 import { Subscription } from 'rxjs/Rx';
 import { EditForAnyUserService } from '../editforanyuser.service';
 import { Router } from '@angular/router';
+import { BookingForAnyUserService } from '../bookingForAnyUser.service';
 
 @Component({
     selector: 'campsite-register-anonymous',
@@ -33,6 +34,7 @@ export class AnonymousCampsiteComponent {
         private datesService: DatesService,
         private userService: UserService,
         private editForAnyUserService: EditForAnyUserService,
+        private bookingForAnyUserService: BookingForAnyUserService,
         private router: Router) {
         this.minDate = new Date();
         this.maxDate = new Date(new Date().setDate(new Date().getDate() + 30));;
@@ -72,6 +74,10 @@ export class AnonymousCampsiteComponent {
     }
 
     async registerCampsite() {
+        if(this.dates == undefined) {
+            this._msgs = [{ severity: 'error', detail: 'Please select your stay dates before making a reservation.'}];
+            return;
+        }
         var register = await this.userService.getRegisterCampsiteObject(this.editForm, this.dates);
         if (this.bookingNumber.length != 0) {
             register.bookingNumber = this.bookingNumber;
@@ -93,16 +99,23 @@ export class AnonymousCampsiteComponent {
                         this.campsiteService.getBookings().then(async res => {
                             this.invalidDates = await this.datesService.setInvalidDates(res.json());
                         })
+                        this.refreshBookings(res.json());
                     } else {
                         // handle error
                         this._msgs = [{ severity: 'error', summary: 'Error', detail: 'Error while making a booking, Please try again.' }];
                     }
+                }).catch(error => {
+                    this._msgs = [{ severity: 'error', summary: 'Error', detail: error.json().message }];
                 });
             } else {
                 this._msgs = [];
                 this._msgs = [{ severity: 'warn', summary: 'Error', detail: 'You can book the island only for a maximum of 3 days.' }];
             }
         }
+    }
+
+    refreshBookings(value: any) {
+        this.bookingForAnyUserService.setMessage(value);
     }
 
     cancel() {

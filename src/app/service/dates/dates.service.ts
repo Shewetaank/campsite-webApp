@@ -25,7 +25,9 @@ export class DatesService {
         }
         arr.forEach(value => {
             var tomorrow = new Date();
+            tomorrow.setMonth(value.getMonth());
             tomorrow.setDate(value.getDate() + 1);
+            tomorrow.setFullYear(value.getFullYear());
             resultAry.push(tomorrow);
         })
         return resultAry;

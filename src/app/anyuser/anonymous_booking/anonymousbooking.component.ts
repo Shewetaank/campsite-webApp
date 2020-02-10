@@ -3,6 +3,8 @@ import { CampsiteService } from './../../service/campsite/campsite.service';
 import { ConfirmationService, Message } from 'primeng/api';
 import 'rxjs/Rx';
 import { EditForAnyUserService } from '../editforanyuser.service';
+import { BookingForAnyUserService } from '../bookingForAnyUser.service';
+import { Subscription } from 'rxjs/Rx';
 
 @Component({
     templateUrl: './anonymousbooking.component.html',
@@ -16,10 +18,26 @@ export class AnonymousBookingComponent {
     bookingNumber = '';
     _msgs: Message[] = [];
     hide: boolean = false;
+    subscription: Subscription;
 
     constructor(private campsiteService: CampsiteService,
         private confirmationService: ConfirmationService,
+        private bookingForAnyUserService: BookingForAnyUserService,
         private editForAnyUserService: EditForAnyUserService) {
+    }
+
+    async ngOnInit() {
+        this.subscription = this.bookingForAnyUserService.message.subscribe(
+            (message) => {
+                this.updateBooking(message);
+            }
+        );
+    }
+
+    ngOnDestroy() {
+        if (typeof this.subscription === undefined) {
+            this.subscription.unsubscribe();
+        }
     }
 
     getBookings(bookingNumber: string) {
@@ -51,9 +69,9 @@ export class AnonymousBookingComponent {
             header: 'Please confirm',
             icon: 'pi pi-exclamation-triangle',
             accept: async () => {
-                this._msgs = [{ severity: 'success', summary: 'Confirmed', detail: 'Your reservation has been cancelled!' }];
                 this.deleteBooking(value);
                 this.myBookings = [];
+                await this.delay(1000);
                 this.refreshBookingsCalendar(value);
             },
             reject: () => {
@@ -62,10 +80,18 @@ export class AnonymousBookingComponent {
         });
     }
 
+    delay(ms: number) {
+        return new Promise( resolve => setTimeout(resolve, ms) );
+    }
+
     async deleteBooking(value: any) {
         this.campsiteService.deleteBookingForAnonymous(value.bookingNumber)
             .then(async res => {
-                console.log(res.text);
+                if(res.json() == 1) {
+                    this._msgs = [{ severity: 'success', summary: 'Confirmed', detail: 'Your reservation has been cancelled!' }];
+                } else {
+                    this._msgs = [{ severity: 'error', summary: 'Error', detail: 'An error occured while deleting your reservation.' }];
+                }
             });
     }
 
@@ -75,5 +101,9 @@ export class AnonymousBookingComponent {
 
     refreshBookingsCalendar(value: any) {
         this.editForAnyUserService.setDeleteBookingMessage(value);
+    }
+
+    async updateBooking(value: any) {
+        this.myBookings = [];
     }
 }

@@ -25,6 +25,7 @@ import { DatesService } from './service/dates/dates.service';
 import { UserService } from './service/user/user.service';
 import { OktaAuthModule } from '@okta/okta-angular';
 import { EditForAnyUserService } from './anyuser/editforanyuser.service';
+import { BookingForAnyUserService } from './anyuser/bookingForAnyUser.service';
 
 const config = {
   issuer: 'https://dev-356601.okta.com/oauth2/default',
@@ -58,7 +59,7 @@ const config = {
     MessagesModule
   ],
   providers: [EditRegistrationService, CampsiteService, BookingUpdateService,
-    DatesService, UserService, EditForAnyUserService],
+    DatesService, UserService, EditForAnyUserService, BookingForAnyUserService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
